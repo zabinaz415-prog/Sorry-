@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Apology Card</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #eef2f7 0%, #e0e7ff 100%);
+      transition: background 0.8s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body.forgiven {
+      background: linear-gradient(135deg, #ffeef2 0%, #ffe4e6 100%);
+    }
+
+    /* Ambient Corner Badges */
+    .badge {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #6366f1;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    .badge-top-left { top: 28px; left: 28px; }
+    .badge-top-right { top: 28px; right: 28px; }
+    .badge-bottom-left { bottom: 28px; left: 28px; }
+    .badge-bottom-right { bottom: 28px; right: 28px; }
+
+    /* Card Wrapper */
+    .card {
+      width: 90%;
+      max-width: 480px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      padding: 40px 32px 36px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      position: relative;
+      z-index: 10;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 50px rgba(99, 102, 241, 0.16);
+    }
+
+    /* Character Image Container */
+    .avatar-wrapper {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 20px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      border: 3px solid #fff;
+    }
+
+    .avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    p.subtitle {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #64748b;
+      margin-bottom: 28px;
+      min-height: 52px;
+      transition: all 0.3s ease;
+    }
+
+    /* Action Buttons */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 25px;
+      padding: 12px 22px;
+      font-size: 0.88rem;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-forgive {
+      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
+      flex: 1.2;
+    }
+
+    .btn-forgive:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45);
+    }
+
+    .btn-resist {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      flex: 1;
+    }
+
+    .btn-resist:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    /* Floating Hearts Animation */
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      animation: floatUp 3.5s linear infinite;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.6);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corner Badges -->
+  <div class="badge badge-top-left">🥺 I'm really sorry!</div>
+  <div class="badge badge-top-right">🌸 Waiting for you</div>
+  <div class="badge badge-bottom-left">✨ Please smile again</div>
+  <div class="badge badge-bottom-right">🫂 Sending warm hugs</div>
+
+  <!-- Main Card -->
+  <div class="card">
+    <div class="avatar-wrapper">
+      <img id="avatar" src="https://media.tenor.com/7p40V9e8e9sAAAAM/cute-sad.gif" alt="Mood Avatar" />
+    </div>
+    <h2 id="title">Are you still mad at me?</h2>
+    <p id="subtitle" class="subtitle">I'm really, really sorry... Please forgive me! 🥺</p>
+    
+    <div class="btn-group" id="btnGroup">
+      <button class="btn-forgive" id="forgiveBtn" onclick="acceptForgiveness()">
+        Yes, I forgive you ❤️
+      </button>
+      <button class="btn-resist" id="resistBtn" onclick="nextStage()">
+        I don't know yet... 💔
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Stages array jisme step-by-step content aur images hain
+    const stages = [
+      {
+        avatar: "https://media.tenor.com/7p40V9e8e9sAAAAM/cute-sad.gif",
+        title: "Are you really sure?",
+        subtitle: "Do you truly forgive me from your heart? I promise I will never make you sad again. 🥺",
+        resistBtn: "Still not sure 💔"
+      },
+      {
+        avatar: "https://media.tenor.com/2sR9p1x_z-cAAAAM/peach-goma-sad.gif",
+        title: "Please Don't Stay Mad...",
+        subtitle: "Seeing you upset breaks my whole heart into pieces... I am so deeply sorry. Please forgive me! 💔",
+        resistBtn: "Still mad! 😤"
+      },
+      {
+        avatar: "https://media.tenor.com/83R90W3z2_UAAAAM/crying-sad.gif",
+        title: "I'm 10000% Sorry, Please!",
+        subtitle: "I am literally on my knees begging for forgiveness... Please forgive your dummy! 😭",
+        resistBtn: "Think about it 🥺"
+      }
+    ];
+
+    let currentStage = 0;
+
+    function nextStage() {
+      if (currentStage < stages.length) {
+        const stage = stages[currentStage];
+        
+        document.getElementById("avatar").src = stage.avatar;
+        document.getElementById("title").innerText = stage.title;
+        document.getElementById("subtitle").innerText = stage.subtitle;
+        document.getElementById("resistBtn").innerText = stage.resistBtn;
+        
+        // Forgive button thoda bada hota jayega
+        const forgiveBtn = document.getElementById("forgiveBtn");
+        const currentScale = 1 + (currentStage + 1) * 0.08;
+        forgiveBtn.style.transform = `scale(${currentScale})`;
+
+        currentStage++;
+      } else {
+        // Agar fir bhi user na maane to button hide ho jaye
+        document.getElementById("resistBtn").style.display = "none";
+      }
+    }
+
+    function acceptForgiveness() {
+      document.body.classList.add("forgiven");
+
+      // Final celebratory content
+      document.getElementById("avatar").src = "https://media.tenor.com/gU4pZ46X3B0AAAAM/peach-and-goma-peach-goma.gif";
+      document.getElementById("title").innerText = "Thank You for Forgiving Me! ❤️";
+      document.getElementById("subtitle").innerText = "You mean the absolute world to me. I promise to cherish you, make you smile, and love you endlessly forever! 💖✨";
+
+      // Buttons ko single celebratory button me convert karna
+      const btnGroup = document.getElementById("btnGroup");
+      btnGroup.innerHTML = `
+        <button class="btn-forgive" style="transform: scale(1.05); width: 100%; justify-content: center;">
+          Love You to Infinity ✨❤️
+        </button>
+      `;
+
+      // Floating hearts shuru karna
+      startHearts();
+    }
+
+    function startHearts() {
+      const heartSymbols = ["❤️", "💖", "💕", "🌸", "✨"];
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (2.5 + Math.random() * 2) + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 4000);
+      }, 250);
+    }
+  </script>
+</body>
+</html>
